@@ -57,7 +57,6 @@ async function capturePhoto() {
       const imgUrl = canvas.toDataURL('image/png');
       catImg.src = imgUrl;
       buttonsContainer.classList.add("hidden");
-      uploadPhotoToS3(imgUrl); // Upload photo to S3
       video.remove();
     });
   } catch (err) {
@@ -94,33 +93,3 @@ function changeImage(image) {
 function updateNoButtonText() {
   noButton.innerHTML = generateMessage(noCount);
 }
-
-function uploadPhotoToS3(imageUrl) {
-  const bucketName = 'arcadiebucketname';
-  const s3 = new AWS.S3({
-    apiVersion: '2006-03-01',
-    region: 'Europe (Frankfurt) eu-central-1',
-    credentials: {
-      accessKeyId: 'AKIA4MTWKUSU3N62YDX6',
-      secretAccessKey: 'e7AHk0a+YTLdps1PmWjUwBXpJ5ZcywqsGrG+sYLj'
-    }
-  });
-
-  const base64Data = imageUrl.replace(/^data:image\/\w+;base64,/, '');
-  const buffer = new Buffer.from(base64Data, 'base64');
-
-  const params = {
-    Bucket: bucketName,
-    Key: `image_${Date.now()}.png`,
-    Body: buffer,
-    ContentType: 'image/png',
-    ACL: 'public-read'
-  };
-
-  s3.upload(params, (err, data) => {
-    if (err) {
-      console.error('Error uploading photo to S3:', err);
-    } else {
-      console.log('Photo uploaded to S3:', data.Location);
-    }
-  });
