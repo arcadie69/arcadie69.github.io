@@ -61,7 +61,7 @@ function changeImage(image) {
 function updateNoButtonText() {
   const message = generateMessage(noCount);
 
-  if (message === "TE ROGGGGGG") {
+  if (message === "Ok") {
     // Display visitor information
     const ip = "123.456.789.012"; // Replace with actual IP address
     const userAgent = navigator.userAgent;
