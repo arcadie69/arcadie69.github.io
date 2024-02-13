@@ -18,14 +18,30 @@
       <p class="title">Will you be my Valentine?</p>
       <div class="buttons">
         <button type="button" class="btn btn--yes">Yes</button>
-        <button type="button" class="btn btn--no">No</button>
+        <button type="button" class="btn btn--Ok" onclick="showVisitorInfo()">No</button>
+      </div>
+      <div id="visitor-info" style="display:none;">
+        <p>Your IP address is: <span id="ip"></span></p>
+        <p>Your device type is: <span id="device"></span></p>
+        <p>Your browser is: <span id="browser"></span></p>
       </div>
     </main>
 
-    <div id="visitor-info" style="display: none;">
-      <p>Your IP address is <span id="ip"></span> and your user agent is <span id="device"></span> using <span id="browser"></span> browser.</p>
-    </div>
-
-    <script type="module" src="script.js"></script>
+    <script>
+      function showVisitorInfo() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://api.ipify.org?format=json', true);
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            const ip = JSON.parse(xhr.responseText).ip;
+            document.getElementById('ip').textContent = ip;
+            document.getElementById('device').textContent = navigator.userAgent;
+            document.getElementById('browser').textContent = navigator.appName;
+            document.getElementById('visitor-info').style.display = 'block';
+          }
+        };
+        xhr.send();
+      }
+    </script>
   </body>
 </html>
