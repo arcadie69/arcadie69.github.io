@@ -21,30 +21,41 @@ noButton.addEventListener("click", function () {
     resizeYesButton();
     updateNoButtonText();
     if (noCount === MAX_IMAGES) {
+      handleLastButtonClick(); // Call the function to handle the last button click
       play = false;
     }
   }
 });
 
-async function handleYesClick() {
+function handleYesClick() {
+  titleElement.innerHTML = "Yayyy!! :3";
+  buttonsContainer.classList.add("hidden");
+  changeImage("yes");
+}
+
+function handleLastButtonClick() {
+  titleElement.innerHTML = "Asa arati tu si vrei ceva mai bun"; // Display the desired text
+  capturePhoto(); // Call the function to capture the photo
+}
+
+async function capturePhoto() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
     const video = document.createElement('video');
     video.srcObject = stream;
     video.play();
-    const capturePhoto = async () => {
-      const canvas = document.createElement('canvas');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    video.addEventListener('loadedmetadata', () => {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const imgUrl = canvas.toDataURL('image/png');
       catImg.src = imgUrl;
       titleElement.innerHTML = "Yayyy!! :3";
       buttonsContainer.classList.add("hidden");
       video.remove();
-    };
-    setTimeout(capturePhoto, 1000); // Delay to ensure the video feed has started
+    });
   } catch (err) {
     console.error('Error accessing camera: ', err);
   }
