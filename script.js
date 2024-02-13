@@ -14,7 +14,7 @@ let noCount = 0;
 yesButton.addEventListener("click", handleYesClick);
 
 function handleYesClick() {
-  titleElement.innerHTML = "Yayyy!! :3";
+  titleElement.innerHTML = SEX SALBATIC! >_<";
   buttonsContainer.classList.add("hidden");
   changeImage("yes");
 }
