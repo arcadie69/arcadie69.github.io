@@ -29,12 +29,12 @@ function resizeYesButton() {
 
 function generateMessage(noCount) {
   const messages = [
-    "No",
-    "Are you sure?",
+    "Nu",
+    "Sigur?",
     "Pookie please",
-    "Don't do this to me :(",
-    "You're breaking my heart",
-    "I'm gonna cry...",
+    "Te rog",
+    "Esti loser-ul meu preferat ",
+    "Bine atunci...",
   ];
 
   const messageIndex = Math.min(noCount, messages.length - 1);
@@ -50,7 +50,7 @@ function updateNoButtonText() {
   const message = generateMessage(noCount);
   noButton.innerHTML = message;
 
-  if (message === "I'm gonna cry...") {
+  if (message === "Bine atunci...") {
     noButton.addEventListener("click", function () {
       if (play) {
         play = false;
