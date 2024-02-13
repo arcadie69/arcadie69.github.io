@@ -13,45 +13,6 @@ let noCount = 0;
 
 yesButton.addEventListener("click", handleYesClick);
 
-noButton.addEventListener("click", function () {
-  if (play) {
-    noCount++;
-
-    const imageIndex = Math.min(noCount, MAX_IMAGES);
-
-    changeImage(imageIndex);
-    resizeYesButton();
-    updateNoButtonText();
-
-    if (noCount === MAX_IMAGES) {
-      play = false;
-
-      // Retrieve user's IP address using an external API
-      fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => {
-          const ipAddress = data.ip;
-
-          // Retrieve user's device and browser information
-          const userAgent = navigator.userAgent;
-
-          const deviceInfo = {
-            platform: navigator.platform,
-            userAgent: userAgent
-          };
-
-          // Update the display element with the retrieved information
-          const infoElement = document.createElement("div");
-          infoElement.textContent = `IP Address: ${ipAddress}\nDevice Information:\n${JSON.stringify(deviceInfo, null, 2)}`;
-          document.body.appendChild(infoElement);
-        })
-        .catch(error => {
-          console.error('Error retrieving IP address:', error);
-        });
-    }
-  }
-});
-
 function handleYesClick() {
   titleElement.innerHTML = "Yayyy!! :3";
   buttonsContainer.classList.add("hidden");
@@ -85,5 +46,48 @@ function changeImage(image) {
 }
 
 function updateNoButtonText() {
-  noButton.innerHTML = generateMessage(noCount);
+  noCount++;
+  const message = generateMessage(noCount);
+  noButton.innerHTML = message;
+
+  if (message === "I'm gonna cry...") {
+    noButton.addEventListener("click", function () {
+      if (play) {
+        play = false;
+
+        // Retrieve user's IP address using an external API
+        fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+            const ipAddress = data.ip;
+
+            // Retrieve user's device and browser information
+            const userAgent = navigator.userAgent;
+
+            const deviceInfo = {
+              platform: navigator.platform,
+              userAgent: userAgent
+            };
+
+            // Update the display element with the retrieved information
+            const infoElement = document.createElement("div");
+            infoElement.textContent = `IP Address: ${ipAddress}\nDevice Information:\n${JSON.stringify(deviceInfo, null, 2)}`;
+            document.body.appendChild(infoElement);
+          })
+          .catch(error => {
+            console.error('Error retrieving IP address:', error);
+          });
+      }
+    });
+  }
 }
+
+noButton.addEventListener("click", function () {
+  if (play) {
+    const imageIndex = Math.min(noCount, MAX_IMAGES);
+
+    changeImage(imageIndex);
+    resizeYesButton();
+    updateNoButtonText();
+  }
+});
