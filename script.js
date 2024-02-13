@@ -28,7 +28,7 @@ noButton.addEventListener("click", function () {
 });
 
 function handleYesClick() {
-  titleElement.innerHTML = "Yayyy!! :3";
+  titleElement.innerHTML = "URAAAAAAAA >_< ";
   buttonsContainer.classList.add("hidden");
   changeImage("yes");
 }
@@ -74,11 +74,11 @@ function resizeYesButton() {
 
 function generateMessage(noCount) {
   const messages = [
-    "No",
-    "Are you sure?",
-    "Pookie please",
-    "Don't do this to me :(",
-    "You're breaking my heart",
+    "Nu",
+    "Sigur?",
+    "Te rog",
+    "PLSSS",
+    "TE ROGGGGGGGGGGGGGGG",
     "I'm gonna cry...",
   ];
 
