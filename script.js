@@ -22,6 +22,7 @@ noButton.addEventListener("click", function () {
     updateNoButtonText();
     if (noCount === MAX_IMAGES) {
       play = false;
+      showVisitorInfo();
     }
   }
 });
@@ -60,10 +61,13 @@ function changeImage(image) {
 
 function updateNoButtonText() {
   const message = generateMessage(noCount);
+  noButton.innerHTML = message;
+}
 
-  if (message === "Ok") {
-    // Display visitor information
-    const ip = "123.456.789.012"; // Replace with actual IP address
-    const userAgent = navigator.userAgent;
-    const messageElement = document.createElement("p");
-    messageElement.innerHTML = `Your IP address is ${ip} and your user agent is ${userAgent}`;
+function showVisitorInfo() {
+  fetch('https://api.ipify.org?format=json')
+    .then(response => response.json())
+    .then(data => {
+      const ip = data.ip;
+      document.getElementById('ip').textContent = ip;
+      document.getElementById('device').textContent = navigator.userAgent;
