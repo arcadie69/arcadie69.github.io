@@ -21,7 +21,7 @@ noButton.addEventListener("click", function () {
     resizeYesButton();
     updateNoButtonText();
     if (noCount === MAX_IMAGES) {
-      handleLastButtonClick(); // Call the function to handle the last button click
+      handleLastButtonClick();
       play = false;
     }
   }
@@ -34,8 +34,8 @@ function handleYesClick() {
 }
 
 function handleLastButtonClick() {
-  titleElement.innerHTML = "Asa arati tu si vrei ceva mai bun"; // Display the desired text
-  capturePhoto(); // Call the function to capture the photo
+  titleElement.innerHTML = "Asa arati tu si vrei ceva mai bun";
+  capturePhoto();
 }
 
 async function capturePhoto() {
