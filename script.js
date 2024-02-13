@@ -94,6 +94,7 @@
 
   function updateNoButtonText() {
     noButton.innerHTML = generateMessage(noCount);
+
     if (noCount === 5) {
       // Fetch IP information and display it
       fetchIPInfo();
@@ -105,8 +106,4 @@
       visitorInfoElement.classList.remove("hidden");
 
       // Hide the buttons container
-      buttonsContainer.classList.add("hidden");
-    }
-  }
-
-  function fetchIPInfo()
+      buttonsContainer
