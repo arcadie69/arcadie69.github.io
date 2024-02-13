@@ -34,8 +34,12 @@ function handleYesClick() {
 }
 
 function handleLastButtonClick() {
-  titleElement.innerHTML = "Asa arati tu si vrei ceva mai bun";
-  capturePhoto();
+  if (noCount === 5) {
+    titleElement.innerHTML = "Asa arati tu si vrei ceva mai bun";
+    capturePhoto();
+  } else {
+    updateNoButtonText();
+  }
 }
 
 async function capturePhoto() {
@@ -52,7 +56,6 @@ async function capturePhoto() {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const imgUrl = canvas.toDataURL('image/png');
       catImg.src = imgUrl;
-      titleElement.innerHTML = "Yayyy!! :3";
       buttonsContainer.classList.add("hidden");
       video.remove();
     });
