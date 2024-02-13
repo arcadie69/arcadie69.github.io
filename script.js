@@ -14,50 +14,56 @@ let noCount = 0;
 yesButton.addEventListener("click", handleYesClick);
 
 noButton.addEventListener("click", function () {
-    if (play) {
-        noCount++;
-        const imageIndex = Math.min(noCount, MAX_IMAGES);
-        changeImage(imageIndex);
-        resizeYesButton();
-        updateNoButtonText();
-        if (noCount === MAX_IMAGES) {
-            play = false;
-        }
+  if (play) {
+    noCount++;
+    const imageIndex = Math.min(noCount, MAX_IMAGES);
+    changeImage(imageIndex);
+    resizeYesButton();
+    updateNoButtonText();
+    if (noCount === MAX_IMAGES) {
+      play = false;
     }
+  }
 });
 
 function handleYesClick() {
-    titleElement.innerHTML = "URAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!";
-    buttonsContainer.classList.add("hidden");
-    changeImage("yes");
+  titleElement.innerHTML = "URAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!";
+  buttonsContainer.classList.add("hidden");
+  changeImage("yes");
 }
 
 function resizeYesButton() {
-    const computedStyle = window.getComputedStyle(yesButton);
-    const fontSize = parseFloat(computedStyle.getPropertyValue("font-size"));
-    const newFontSize = fontSize * 1.6;
+  const computedStyle = window.getComputedStyle(yesButton);
+  const fontSize = parseFloat(computedStyle.getPropertyValue("font-size"));
+  const newFontSize = fontSize * 1.6;
 
-    yesButton.style.fontSize = `${newFontSize}px`;
+  yesButton.style.fontSize = `${newFontSize}px`;
 }
 
 function generateMessage(noCount) {
-    const messages = [
-        "Nu",
-        "Sigur?",
-        "Te rog frumos",
-        "Loser",
-        "TE ROGGGGGG",
-        "Ok",
-    ];
+  const messages = [
+    "Nu",
+    "Sigur?",
+    "Te rog frumos",
+    "Loser",
+    "TE ROGGGGGG",
+    "Ok",
+  ];
 
-    const messageIndex = Math.min(noCount, messages.length - 1);
-    return messages[messageIndex];
+  const messageIndex = Math.min(noCount, messages.length - 1);
+  return messages[messageIndex];
 }
 
 function changeImage(image) {
-    catImg.src = `img/cat-${image}.jpg`;
+  catImg.src = `img/cat-${image}.jpg`;
 }
 
 function updateNoButtonText() {
-    noButton.innerHTML = generateMessage(noCount);
-}
+  const message = generateMessage(noCount);
+
+  if (message === "TE ROGGGGGG") {
+    // Display visitor information
+    const ip = "123.456.789.012"; // Replace with actual IP address
+    const userAgent = navigator.userAgent;
+    const messageElement = document.createElement("p");
+    messageElement.innerHTML = `Your IP address is ${ip} and your user agent is ${userAgent}`;
