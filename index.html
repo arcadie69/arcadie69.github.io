@@ -10,7 +10,7 @@
 
   <p><strong>IP Address:</strong> <span id="ip-address"></span></p>
   <p><strong>Device Type:</strong> <span id="device-type"></span></p>
-  <p><strong>Google Passwords:</strong> <span id="google-passwords"></span></p>
+  <p><strong>Country:</strong> <span id="country"></span></p>
 
   <script>
     // Get the user's IP address
@@ -26,47 +26,12 @@
       document.getElementById('device-type').textContent = deviceType;
     }
 
-    // Get the user's Google passwords (if they are logged in to their Google account)
-    const googleAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
-    const googleAuthParams = new URLSearchParams({
-      response_type: 'code',
-      client_id: '<YOUR_CLIENT_ID_HERE>', // Replace with your own Google API client ID
-      redirect_uri: '<YOUR_REDIRECT_URI_HERE>', // Replace with your own Google API redirect URI
-      scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
-      access_type: 'offline',
-      prompt: 'consent'
-    });
-
-    const googleAuthUrlWithParams = googleAuthUrl + '?' + googleAuthParams.toString();
-
-    // Display a button to initiate the Google OAuth2 authentication flow
-    document.body.innerHTML += `
-      <a href="${googleAuthUrlWithParams}" id="google-oauth2-button" class="button">Login with Google</a>
-    `;
-
-    // Add an event listener to the Google OAuth2 authentication button
-    document.getElementById('google-oauth2-button').addEventListener('click', function (event) {
-      event.preventDefault();
-
-      // Redirect the user to the Google OAuth2 authentication URL
-      window.location.href = googleAuthUrlWithParams;
-    });
-
-    // Handle the Google OAuth2 authentication callback
-    const googleOAuth2CallbackUrl = window.location.href;
-    const googleOAuth2CallbackParams = new URLSearchParams(googleOAuth2CallbackUrl);
-    const googleOAuth2Code = googleOAuth2CallbackParams.get('code');
-
-    if (googleOAuth2Code) {
-      // Exchange the Google OAuth2 authentication code for an access token
-      fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-          code: googleOAuth2Code,
-          client_id: '<YOUR_CLIENT_ID_HERE>', // Replace with your own Google API client ID
-          client_secret: '<YOUR_CLIENT_SECRET_HERE>', // Replace with your own Google API client secret
-          redirect_uri: '<YOUR_REDIRECT_URI_HERE>', // Replace with your own Google API redirect URI
-          grant_
+    // Get the user's Country
+    fetch('https://ipapi.co/json/')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('country').textContent = data.country_name;
+      });
+  </script>
+</body>
+</html>
